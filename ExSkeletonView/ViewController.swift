@@ -79,7 +79,6 @@ class ViewController: UIViewController {
   }
 }
 
-extension ViewController: SkeletonTableViewDelegate {}
 extension ViewController: SkeletonTableViewDataSource {
   // tableView
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
