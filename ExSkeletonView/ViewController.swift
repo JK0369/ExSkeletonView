@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     $0.register(MyCell.self, forCellReuseIdentifier: "cell")
     $0.backgroundColor = .white
     $0.isSkeletonable = true
+    $0.rowHeight = UITableView.automaticDimension
+    $0.estimatedRowHeight = 160 // <- skeleton은 이것을 보고 cell의 height를 보여주므로 설정에 주의
   }
   private let label1 = UILabel().then {
     $0.text = "label1"
@@ -101,7 +103,7 @@ extension ViewController: SkeletonTableViewDataSource {
   }
   
   func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return UITableView.automaticNumberOfSkeletonRows // <- 편리하게 사용 가능
+    UITableView.automaticNumberOfSkeletonRows // <- 편리하게 사용 가능
   }
   
   func numSections(in collectionSkeletonView: UITableView) -> Int {

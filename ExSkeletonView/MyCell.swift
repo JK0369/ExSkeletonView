@@ -32,6 +32,7 @@ class MyCell: UITableViewCell {
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     self.isSkeletonable = true
+    self.contentView.isSkeletonable = true
     
     self.contentView.backgroundColor = .white
     self.contentView.addSubview(self.pictureImageView)
