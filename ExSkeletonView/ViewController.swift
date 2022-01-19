@@ -13,12 +13,19 @@ import Then
 class ViewController: UIViewController {
   private let tableView = UITableView().then {
     $0.register(MyCell.self, forCellReuseIdentifier: "cell")
-    $0.backgroundColor = .black
+    $0.backgroundColor = .white
+    $0.isSkeletonable = true
   }
-  private let label = UILabel().then {
-    $0.text = "123456577765"
+  private let label1 = UILabel().then {
+    $0.text = "label1"
     $0.numberOfLines = 0
-    $0.textColor = .white
+    $0.textColor = .black
+    $0.isSkeletonable = true
+  }
+  private let label2 = UILabel().then {
+    $0.text = "label2 ... description"
+    $0.numberOfLines = 0
+    $0.textColor = .black
     $0.isSkeletonable = true
   }
   private var dataSource = [MyData]()
@@ -26,13 +33,18 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.view.backgroundColor = .black
+    self.view.backgroundColor = .white
     self.view.addSubview(self.tableView)
-    self.view.addSubview(self.label)
+    self.view.addSubview(self.label1)
+    self.view.addSubview(self.label2)
     
-    self.label.snp.makeConstraints {
-      $0.centerX.equalToSuperview()
-      $0.top.equalToSuperview().inset(52)
+    self.label1.snp.makeConstraints {
+      $0.left.equalToSuperview().inset(24)
+      $0.top.equalToSuperview().inset(62)
+    }
+    self.label2.snp.makeConstraints {
+      $0.left.equalTo(self.label1)
+      $0.top.equalTo(self.label1.snp.bottom).offset(12)
     }
     self.tableView.snp.makeConstraints {
       $0.top.equalToSuperview().inset(120)
@@ -40,18 +52,11 @@ class ViewController: UIViewController {
     }
     
     self.tableView.dataSource = self
+    self.view.isSkeletonable = true
     
     let skeletonAnimation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
-//    self.label.showSkeleton(usingColor: .gray)
-    /// transition: 스켈레톤 보여질때와 사라질때 효과
-    self.label.showAnimatedGradientSkeleton(usingGradient: .init(colors: [.lightGray, .gray]), animation: skeletonAnimation, transition: .none)
-    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      self.label.hideSkeleton()
-    }
-//    self.tableView.isSkeletonable = true
-//    self.tableView.showSkeleton(usingColor: .gray, transition: .crossDissolve(1))
-    
-//    self.fetchDataSource()
+    self.view.showAnimatedGradientSkeleton(usingGradient: .init(colors: [.lightGray, .gray]), animation: skeletonAnimation, transition: .none)
+    self.fetchDataSource()
   }
   
   private func fetchDataSource() {
@@ -66,19 +71,15 @@ class ViewController: UIViewController {
         }
       self.dataSource.append(contentsOf: datas)
       self.tableView.reloadData()
-      
-      self.tableView.stopSkeletonAnimation()
-      self.tableView.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(1))
+      self.view.hideSkeleton(reloadDataAfter: true, transition: .crossDissolve(0.5))
+      self.view.hideSkeleton()
     }
   }
 }
 
 extension ViewController: SkeletonTableViewDelegate {}
 extension ViewController: SkeletonTableViewDataSource {
-  func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
-    return "cell"
-  }
-  
+  // tableView
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     self.dataSource.count
   }
@@ -90,7 +91,20 @@ extension ViewController: SkeletonTableViewDataSource {
     return cell
   }
   
+  // skeletonView
+  func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+    return "cell"
+  }
+  
+  func collectionSkeletonView(_ skeletonView: UITableView, skeletonCellForRowAt indexPath: IndexPath) -> UITableViewCell? {
+    skeletonView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+  }
+  
   func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    0
+    return UITableView.automaticNumberOfSkeletonRows // <- 편리하게 사용 가능
+  }
+  
+  func numSections(in collectionSkeletonView: UITableView) -> Int {
+    1
   }
 }

@@ -15,21 +15,25 @@ class MyCell: UITableViewCell {
     static let imageHeight = UIScreen.main.bounds.height * 1 / 5
   }
   
-  private let pictureImageView = UIImageView()
+  private let pictureImageView = UIImageView().then {
+    $0.isSkeletonable = true
+  }
   private let titleLabel = UILabel().then {
-    $0.textColor = .white
+    $0.textColor = .black
     $0.font = .systemFont(ofSize: 24)
     $0.isSkeletonable = true
   }
   private let descriptionLabel = UILabel().then {
-    $0.textColor = .white
+    $0.textColor = .black
     $0.font = .systemFont(ofSize: 18)
+    $0.isSkeletonable = true
   }
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    self.isSkeletonable = true
     
-    self.contentView.backgroundColor = .black
+    self.contentView.backgroundColor = .white
     self.contentView.addSubview(self.pictureImageView)
     self.contentView.addSubview(self.titleLabel)
     self.contentView.addSubview(self.descriptionLabel)
